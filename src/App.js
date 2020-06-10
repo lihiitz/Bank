@@ -4,18 +4,18 @@ import './App.css';
 import Transactions from './Components/Transactions';
 import Operations from './Components/Operations';
 import axios from 'axios';
+import SumCategories from './Components/SumCategories';
 
 
 class App extends Component {
   constructor(){
     super()
     this.state = {
-      data: []
+      data: [] // data[0] = {amount: -50, vendor: elevation, category: payCheck}
     }
   }
 
   totalBalance = () => {
-    // debugger
     let sum = 0
     this.state.data.forEach(element => {
       sum += element.amount
@@ -49,17 +49,20 @@ class App extends Component {
     })
   }
   render(){
+    let balance = this.totalBalance()
     return (
       <Router>
         <div>
           <div className="app">
-            BALANCE: ${this.totalBalance()}<br></br>
-            <Link to="/">Transactions</Link><br></br>
-            <Link to="/operations">Operations</Link>
+            <div style={{color: balance > 500 ? "green" : "red"}}>BALANCE: {balance}</div><br></br>
+            <Link to="/">TRANSACTIONS</Link><br></br>
+            <Link to="/operations">OPERATIONS</Link><br></br>
+            <Link to="/sumCategories">BREAKDOWN</Link>
 
           </div>
           <Route path="/" exact render={() => <Transactions data={this.state.data} removeFunc={this.removeTransaction}/>}></Route>
           <Route path="/operations" exact render={() => <Operations addFunc={this.addTransaction}/>}></Route>
+          <Route path="/sumCategories" exact render={() => <SumCategories data={this.state.data}/>}></Route>
         </div>
       </Router>
     )
