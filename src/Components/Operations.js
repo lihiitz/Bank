@@ -11,12 +11,16 @@ class Operations extends Component{
             category: ""
         }
     }
-    handleDeposit = () => {
-        this.props.addFunc({amount: this.state.amount * 1, vendor: this.state.vendor, category: this.state.category})
-    }
+    // handleDeposit = () => {
+    //     this.props.addFunc({amount: this.state.amount * 1, vendor: this.state.vendor, category: this.state.category})
+    // }
 
-    handleWithdraw = () => {
-        this.props.addFunc({amount: this.state.amount * -1, vendor: this.state.vendor, category: this.state.category})
+    // handleWithdraw = () => {
+    //     this.props.addFunc({amount: this.state.amount * -1, vendor: this.state.vendor, category: this.state.category})
+    // }
+
+    handleOperation = (num) => {
+        this.props.addFunc({amount: this.state.amount * num, vendor: this.state.vendor, category: this.state.category})
     }
 
     handleInput = (e) => {
@@ -31,8 +35,10 @@ class Operations extends Component{
                 <input name="vendor" value={this.state.vendor} placeholder="Vendor" onChange={this.handleInput}></input>
                 <input name="category" value={this.state.category} placeholder="Category" onChange={this.handleInput}></input><br></br>
                 <DelayLink delay={2000} to="/">
-                    <button onClick={this.handleDeposit}>Deposit</button>
-                    <button onClick={this.handleWithdraw}>Withdraw</button>
+                    {/* <button onClick={this.handleDeposit}>Deposit</button>
+                    <button onClick={this.handleWithdraw}>Withdraw</button> */}
+                    <button onClick={() => this.handleOperation(1)}>Deposit</button>
+                    <button onClick={() => this.handleOperation(-1)}>Withdraw</button>
                 </DelayLink>
             </div>
         )

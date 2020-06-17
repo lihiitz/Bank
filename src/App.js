@@ -16,16 +16,13 @@ class App extends Component {
   }
 
   totalBalance = () => {
-    let sum = 0
-    this.state.data.forEach(element => {
-      sum += element.amount
-    })
-    return sum
+    const reducer = (accumulator, currentValue) => accumulator + currentValue 
+    return (this.state.data.map(d => d.amount).reduce(reducer, 0))
   }
 
   removeTransaction = async(id) => {
-    // const response = await axios.delete(`http://localhost:3001/transaction/${id}`)
-    const response = await axios.delete(`/transaction/${id}`)
+    const response = await axios.delete(`http://localhost:3001/transaction/${id}`)
+    // const response = await axios.delete(`/transaction/${id}`)
     let tempTrans = [...this.state.data]
     let index = tempTrans.findIndex(t => t._id === id)
     tempTrans.splice(index, 1)
@@ -35,8 +32,8 @@ class App extends Component {
   }
 
   addTransaction = async(transaction) => {
-    // const response = await axios.post("http://localhost:3001/transaction", transaction)
-    const response = await axios.post("/transaction", transaction)
+    const response = await axios.post("http://localhost:3001/transaction", transaction)
+    // const response = await axios.post("/transaction", transaction)
     let tempTransactions = [...this.state.data]
     tempTransactions.push(response.data)
     this.setState({
@@ -45,12 +42,13 @@ class App extends Component {
   }
 
   componentDidMount = async() => {
-    // const response = await axios.get("http://localhost:3001/transactions")
-    const response = await axios.get("/transactions")
+    const response = await axios.get("http://localhost:3001/transactions")
+    // const response = await axios.get("/transactions")
     this.setState({
       data: response.data
     })
   }
+  
   render(){
     let balance = this.totalBalance()
     return (

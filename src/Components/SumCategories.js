@@ -11,14 +11,15 @@ class SumCategories extends Component{
                 table[element.category] = element.amount
             }
         })
-        return Object.entries(table)
+        return table
     }
     render(){
-        const arr = this.sumByCategoriesObj()
+        const obj = this.sumByCategoriesObj()
+        const arr = Object.keys(obj)
         const data = this.props.data
         return(
             <div>
-                {arr.map(element => <div>{element[0]} {element[1]}</div>)}
+                {arr.map(element => <div>{element} {obj[element]}</div>)}
             </div>
         )
     }
