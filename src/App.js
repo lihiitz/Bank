@@ -1,73 +1,84 @@
-import React, {Component} from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
+import React, { Component, useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import './App.css';
 import Transactions from './Components/Transactions';
 import Operations from './Components/Operations';
 import axios from 'axios';
 import SumCategories from './Components/SumCategories';
+import { BottomNavigation, BottomNavigationAction, makeStyles } from '@material-ui/core';
 
+const useStyles = makeStyles({
+  root: {
+    width: 500,
+  },
+})
 
-class App extends Component {
-  constructor(){
-    super()
-    this.state = {
-      data: [] // data[0] = {amount: -50, vendor: elevation, category: payCheck}
-    }
+function App() {
+
+  const classes = useStyles()
+  let [data, setData] = useState([])
+
+  const totalBalance = () => {
+    const reducer = (accumulator, currentValue) => accumulator + currentValue
+    return (data.map(d => d.amount).reduce(reducer, 0))
   }
 
-  totalBalance = () => {
-    const reducer = (accumulator, currentValue) => accumulator + currentValue 
-    return (this.state.data.map(d => d.amount).reduce(reducer, 0))
-  }
-
-  removeTransaction = async(id) => {
+  const removeTransaction = async (id) => {
     const response = await axios.delete(`http://localhost:3001/transaction/${id}`)
     // const response = await axios.delete(`/transaction/${id}`)
-    let tempTrans = [...this.state.data]
+    let tempTrans = [...data]
     let index = tempTrans.findIndex(t => t._id === id)
     tempTrans.splice(index, 1)
-    this.setState({
-      data : tempTrans
-    })
+    setData(tempTrans)
   }
 
-  addTransaction = async(transaction) => {
+  const addTransaction = async (transaction) => {
     const response = await axios.post("http://localhost:3001/transaction", transaction)
     // const response = await axios.post("/transaction", transaction)
-    let tempTransactions = [...this.state.data]
+    let tempTransactions = [...data]
     tempTransactions.push(response.data)
-    this.setState({
-      data : tempTransactions
-    })
+    setData(tempTransactions)
   }
 
-  componentDidMount = async() => {
-    const response = await axios.get("http://localhost:3001/transactions")
-    // const response = await axios.get("/transactions")
-    this.setState({
-      data: response.data
-    })
-  }
-  
-  render(){
-    let balance = this.totalBalance()
-    return (
-      <Router>
-        <div>
-          <div className="app">
-            <div style={{color: balance > 500 ? "green" : "red"}}>BALANCE: {balance}</div><br></br>
-            <Link to="/">TRANSACTIONS</Link><br></br>
-            <Link to="/operations">OPERATIONS</Link><br></br>
-            <Link to="/sumCategories">BREAKDOWN</Link>
+  // const componentDidMount = async() => {
+  //   const response = await axios.get("http://localhost:3001/transactions")
+  //   // const response = await axios.get("/transactions")
+  //   setData(response.data)
+  // }
 
-          </div>
-          <Route path="/" exact render={() => <Transactions data={this.state.data} removeFunc={this.removeTransaction}/>}></Route>
-          <Route path="/operations" exact render={() => <Operations addFunc={this.addTransaction}/>}></Route>
-          <Route path="/sumCategories" exact render={() => <SumCategories data={this.state.data}/>}></Route>
+  useEffect(() => {
+    async function fetchData () {
+      const response = await axios.get("http://localhost:3001/transactions")
+      // const response = await axios.get("/transactions")
+      setData(response.data)
+    }
+    fetchData()
+  }, [])
+
+  let balance = totalBalance()
+  return (
+    <Router>
+      <div>
+
+        {/* <BottomNavigation showLabels  onChange={handleChange} className={classes.root}>
+          <BottomNavigationAction label="TRANSACTIONS" value="transactions"/>
+          <BottomNavigationAction label="OPERATIONS" value="operations"/>
+          <BottomNavigationAction label="BREAKDOWN" value="breakdown"/>
+        </BottomNavigation> */}
+
+        <div className="app">
+          <div style={{ color: balance > 500 ? "green" : "red" }}>BALANCE: {balance}</div><br></br>
+          <Link to="/">TRANSACTIONS</Link><br></br>
+          <Link to="/operations">OPERATIONS</Link><br></br>
+          <Link to="/sumCategories">BREAKDOWN</Link>
+
         </div>
-      </Router>
-    )
-  }
+        <Route path="/" exact render={() => <Transactions data={data} removeFunc={removeTransaction} />}></Route>
+        <Route path="/operations" exact render={() => <Operations addFunc={addTransaction} />}></Route>
+        <Route path="/sumCategories" exact render={() => <SumCategories data={data} />}></Route>
+      </div>
+    </Router>
+  )
 }
 
 export default App;

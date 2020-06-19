@@ -1,20 +1,33 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
+import { TableRow, TableCell, withStyles, IconButton } from '@material-ui/core'
+import DeleteIcon from '@material-ui/icons/Delete';
 
-class Transaction extends Component{
-    handleClick = () => {
-        this.props.removeFunc(this.props.data._id)
+  const StyledTableRow = withStyles((theme) => ({
+    root: {
+      '&:nth-of-type(odd)': {
+        // backgroundColor: theme.palette.action.hover,
+        backgroundColor: theme.palette.primary.light,
+      },
+    },
+  }))(TableRow)
+
+
+function Transaction(props) {
+    const handleClick = () => {
+        props.removeFunc(props.data._id)
     }
-    render(){
-        const data = this.props.data
-        return(
-            <div className="transaction">
-                <div className={data.amount > 0 ? "green" : "red"}>
-                    {data.amount} {data.vendor} {data.category}
-                    <button onClick={this.handleClick}>Delete Transaction</button>
-                </div>
-            </div>
-        )
-    }
+    const data = props.data
+    return (
+
+        <StyledTableRow className={data.amount > 0 ? "green" : "red"} key={data.key}>
+            <TableCell component="th" scope="row">{data.category}</TableCell>
+            <TableCell align="right">{data.vendor}</TableCell>
+            <TableCell align="right">{data.amount}</TableCell>
+            <TableCell align="right">
+                <IconButton aria-label="delete" onClick={handleClick}><DeleteIcon /></IconButton>
+            </TableCell>
+        </StyledTableRow>
+    )
 }
 
 export default Transaction
