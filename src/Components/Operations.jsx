@@ -1,6 +1,6 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 import DelayLink from 'react-delay-link'
-import { Button, Input, InputLabel, makeStyles, FormControl } from '@material-ui/core'
+import { Button, Input, makeStyles, FormControl, Snackbar } from '@material-ui/core'
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 const useStyles = makeStyles((theme) => ({
@@ -23,14 +23,22 @@ function Operations(props) {
 
     const classes = useStyles()
 
+    let [open, setOpen] = useState(false)
     let [amount, setAmount] = useState("")
     let [vendor, setVendor] = useState("")
     let [category, setCategory] = useState("")
 
     const handleOperation = (num) => {
         props.addFunc({ amount: amount * num, vendor, category })
+        setOpen(true)
     }
 
+    const handleClose = (e, reason) => {
+        if (reason === 'clickaway') {
+            return
+        }
+        setOpen(false)
+    }
     const handleInput = (e) => {
         const name = e.target.name
         const value = e.target.value
@@ -43,43 +51,43 @@ function Operations(props) {
         }
     }
     return (
-        <div className={classes.root}>
-
-            <FormControl className={classes.margin}>
-                <Input
-                    id="standard-adornment-amount"
+        <div>
+                <Input className={classes.margin}
                     name="setAmount"
                     value={amount}
                     placeholder="Amount"
                     onChange={handleInput}
                     startAdornment={<InputAdornment position="start">$</InputAdornment>}
                 />
-            </FormControl>
-            <FormControl className={classes.margin}>
-                <Input
-                    id="standard-adornment-vendor"
+                <Input className={classes.margin}
                     name="setVendor"
                     value={vendor}
                     placeholder="Vendor"
                     onChange={handleInput}
                 />
-            </FormControl>
-            <FormControl className={classes.margin}>
-                <Input
-                    id="standard-adornment-category"
+                <Input className={classes.margin}
                     name="setCategory"
                     value={category}
                     placeholder="Category"
                     onChange={handleInput}
                 />
-            </FormControl>
-            
-            <DelayLink delay={1500} to="/">
+
+            <DelayLink delay={2000} to="/">
                 <FormControl className={classes.margin}>
-                    <Button variant="outlined" color="primary" onClick={() => handleOperation(1)}>Deposit</Button>
+                <Snackbar
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'left'
+                        }}
+                        open={open}
+                        autoHideDuration={2000}
+                        onClose={handleClose}
+                        message="operation completed"
+                    />
+                    <Button variant="contained" style={{ background: "green" }} onClick={() => handleOperation(1)}>Deposit</Button>
                 </FormControl>
                 <FormControl className={classes.margin}>
-                    <Button variant="outlined" color="secondary" onClick={() => handleOperation(-1)}>Withdraw</Button>
+                    <Button variant="contained" color="secondary" onClick={() => handleOperation(-1)}>Withdraw</Button>
                 </FormControl>
 
             </DelayLink>

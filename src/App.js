@@ -5,7 +5,8 @@ import Transactions from './Components/Transactions';
 import Operations from './Components/Operations';
 import axios from 'axios';
 import SumCategories from './Components/SumCategories';
-import { BottomNavigation, BottomNavigationAction, makeStyles } from '@material-ui/core';
+import { BottomNavigation, BottomNavigationAction, makeStyles, Grid } from '@material-ui/core';
+import Navbar from './Components/Navbar';
 
 const useStyles = makeStyles({
   root: {
@@ -59,20 +60,7 @@ function App() {
   return (
     <Router>
       <div>
-
-        {/* <BottomNavigation showLabels  onChange={handleChange} className={classes.root}>
-          <BottomNavigationAction label="TRANSACTIONS" value="transactions"/>
-          <BottomNavigationAction label="OPERATIONS" value="operations"/>
-          <BottomNavigationAction label="BREAKDOWN" value="breakdown"/>
-        </BottomNavigation> */}
-
-        <div className="app">
-          <div style={{ color: balance > 500 ? "green" : "red" }}>BALANCE: {balance}</div><br></br>
-          <Link to="/">TRANSACTIONS</Link><br></br>
-          <Link to="/operations">OPERATIONS</Link><br></br>
-          <Link to="/sumCategories">BREAKDOWN</Link>
-
-        </div>
+        <Navbar balance={balance}/>
         <Route path="/" exact render={() => <Transactions data={data} removeFunc={removeTransaction} />}></Route>
         <Route path="/operations" exact render={() => <Operations addFunc={addTransaction} />}></Route>
         <Route path="/sumCategories" exact render={() => <SumCategories data={data} />}></Route>

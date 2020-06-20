@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Transaction from './Transaction';
-import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, makeStyles, withStyles } from '@material-ui/core';
+import { TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, makeStyles, withStyles, Grid } from '@material-ui/core';
 
 const useStyles = makeStyles({
     table: {
